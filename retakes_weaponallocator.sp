@@ -57,6 +57,14 @@ const int pistol_choice_t_cz = 4;
 const int pistol_choice_t_deagle = 5;
 const int pistol_choice_t_r8 = 6;
 
+const int rifle_choice_eco_ssg08 = 1;
+const int rifle_choice_eco_nova = 2;
+const int rifle_choice_eco_sawedoff = 3;
+const int rifle_choice_eco_mac10 = 4;
+const int rifle_choice_eco_mp7 = 5;
+const int rifle_choice_eco_ump45 = 6;
+const int rifle_choice_eco_bizon = 7;
+
 const int nade_price_for_hegrenade = 300;
 const int nade_price_for_flashbang = 200;
 const int nade_price_for_smokegrenade = 500;
@@ -78,12 +86,15 @@ int g_PistolchoiceT[MAXPLAYERS+1];
 int g_RifleChoiceCT[MAXPLAYERS+1];
 int g_RifleChoiceT[MAXPLAYERS+1];
 bool g_AwpChoice[MAXPLAYERS+1];
+int g_EcoChoice[MAXPLAYERS+1];
 int g_side[MAXPLAYERS+1];
 Handle g_hGUNChoiceCookieCT = INVALID_HANDLE;
 Handle g_hGUNChoiceCookieT = INVALID_HANDLE;
 Handle g_hRifleChoiceCookieCT = INVALID_HANDLE;
 Handle g_hRifleChoiceCookieT = INVALID_HANDLE;
 Handle g_hAwpChoiceCookie = INVALID_HANDLE;
+Handle g_hRifleChoiceCookieEco = INVALID_HANDLE;
+
 
 Handle g_h_sm_retakes_weapon_mimic_competitive_pistol_rounds = INVALID_HANDLE;
 Handle g_h_sm_retakes_weapon_primary_enabled = INVALID_HANDLE;
@@ -124,6 +135,7 @@ int nades_molotov_t_max = 0;
 
 int dollars_for_mimic_competitive_pistol_rounds;
 
+
 public Plugin myinfo = {
     name = "CS:GO Retakes: Customised Weapon Allocator for splewis retakes plugin",
     author = "thubn",
@@ -138,6 +150,7 @@ public void OnPluginStart() {
     g_hRifleChoiceCookieCT  = RegClientCookie("retakes_riflechoice_ct", "", CookieAccess_Private);
     g_hRifleChoiceCookieT  = RegClientCookie("retakes_riflechoice_t", "", CookieAccess_Private);
     g_hAwpChoiceCookie = RegClientCookie("retakes_awpchoice", "", CookieAccess_Private); 
+    g_hRifleChoiceCookieEco = RegClientCookie("retakes_ecochoice", "", CookieAccess_Private);
 
     g_h_sm_retakes_weapon_pistolrounds = CreateConVar("sm_retakes_weapon_pistolrounds", "5", "The number of gun rounds (0 = no gun round)");
     g_h_sm_retakes_weapon_mimic_competitive_pistol_rounds = CreateConVar("sm_retakes_weapon_mimic_competitive_pistol_rounds", "1", "Whether pistol rounds are like 800$ rounds");
@@ -177,6 +190,7 @@ public void OnClientConnected(int client) {
     g_PistolchoiceT[client] = pistol_choice_t_glock;
     g_RifleChoiceCT[client] = rifle_choice_ct_m4a4;
     g_RifleChoiceT[client] = rifle_choice_t_ak47;
+    g_EcoChoice[client] = rifle_choice_eco_ump45;
     g_side[client] = 0;
     g_AwpChoice[client] = false;
 }
@@ -228,6 +242,7 @@ public void OnClientCookiesCached(int client) {
     g_RifleChoiceCT[client] = GetCookieInt(client, g_hRifleChoiceCookieCT);
     g_RifleChoiceT[client] = GetCookieInt(client, g_hRifleChoiceCookieT);
     g_AwpChoice[client]  = GetCookieBool(client, g_hAwpChoiceCookie);
+    g_EcoChoice[client] = GetCookieInt(client, g_hRifleChoiceCookieEco);
 }
 
 static void SetNades(char nades[NADE_STRING_LENGTH], bool terrorist, bool competitivePistolRound) {
@@ -334,6 +349,18 @@ static void SetNades(char nades[NADE_STRING_LENGTH], bool terrorist, bool compet
     }
 }
 
+public int t_win_streak = 0;
+public int ct_win_streak = 0;
+public void Retakes_OnRoundWon(int winner, ArrayList tPlayers, ArrayList ctPlayers){
+	if(winner == CS_TEAM_T){
+		ct_win_streak = 0;
+		t_win_streak = t_win_streak + 1;
+	}else{
+		t_win_streak = 0;
+		ct_win_streak = ct_win_streak + 1;
+	}
+}
+
 public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bombsite) {
     int tCount = GetArraySize(tPlayers);
     int ctCount = GetArraySize(ctPlayers);
@@ -349,6 +376,10 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
     int kevlar = 100;
     bool helmet = true;
     bool kit = true;
+    bool isTEco = false;
+    bool isCtEco = false;
+    bool isTEco2 = false;
+    bool isCtEco2 = false;
 
     nades_hegrenade_ct_max = 0;
     nades_hegrenade_t_max = 0;
@@ -358,6 +389,32 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
     nades_flashbang_t_max = 0;
     nades_molotov_ct_max = 0;
     nades_molotov_t_max = 0;
+	
+    if(t_win_streak > 3){
+        isTEco = true;
+        PrintToServer("T Eco by win streak");
+    }
+    if(GetRandomInt(1, 7) <= 2){
+        isCtEco = true;
+        PrintToServer("CT Eco by random");
+    }
+    if(GetRandomInt(1, 10) <= 2){
+        isTEco = true;
+        PrintToServer("T Eco by random");
+    }
+    if(t_win_streak > 4){
+        isTEco2 = true;
+        PrintToServer("T Eco2 by win streak");
+    }
+    if(GetRandomInt(1, 8) <= 1){
+        isTEco2 = true;
+        PrintToServer("T Eco2 by random");
+    }
+    if(GetRandomInt(1, 7) <= 1){
+        isCtEco2 = true;
+        PrintToServer("CT Eco2 by random");
+    }
+    
 
     bool giveTAwp = true;
     bool giveCTAwp = true;
@@ -402,7 +459,7 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
         dollars_for_mimic_competitive_pistol_rounds = money_for_competitive_pistol_round;
 
         primary = "";
-        if (!isPistolRound)
+        if (!isPistolRound && !isTEco && !isTEco2)
         {
             int randGiveAwp = GetRandomInt(0, 1);
 
@@ -438,8 +495,33 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
                     case rifle_choice_t_ump45:
                     	primary = "weapon_ump45";
                     case rifle_choice_t_p90:
-                    	primary = "weapon_bizon";
+                    	primary = "weapon_p90";
+                    case rifle_choice_t_bizon:
+						primary = "weapon_bizon";
                 }
+            }
+        }
+        
+        if (isTEco && !isTEco2 && !isPistolRound)
+        {
+            int rifle_choice_t = g_EcoChoice[client];
+            primary = "weapon_ump45";
+            switch(rifle_choice_t)
+            {
+                case rifle_choice_eco_ssg08:
+           	        primary = "weapon_ssg08";
+                case rifle_choice_eco_nova:
+                	primary = "weapon_nova";
+                case rifle_choice_eco_sawedoff:
+                    primary = "weapon_sawedoff";
+                case rifle_choice_eco_mac10:
+                    primary = "weapon_mac10";
+                case rifle_choice_eco_mp7:
+                    primary = "weapon_mp7";
+                case rifle_choice_eco_ump45:
+                    primary = "weapon_ump45";
+                case rifle_choice_eco_bizon:
+                    primary = "weapon_bizon";
             }
         }
 
@@ -530,7 +612,7 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
         dollars_for_mimic_competitive_pistol_rounds = money_for_competitive_pistol_round;
 
         primary = "";
-        if (!isPistolRound)
+        if (!isPistolRound && !isCtEco && !isCtEco2)
         {
             int randGiveAwp = GetRandomInt(0, 1);
 
@@ -572,6 +654,28 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
 					case rifle_choice_ct_bizon:
 						primary = "weapon_bizon";
                 }
+            }
+        }
+        if (isCtEco && !isCtEco2 && !isPistolRound)
+        {
+            int rifle_choice_t = g_EcoChoice[client];
+            primary = "weapon_ump45";
+            switch(rifle_choice_t)
+            {
+                case rifle_choice_eco_ssg08:
+           	        primary = "weapon_ssg08";
+                case rifle_choice_eco_nova:
+                	primary = "weapon_nova";
+                case rifle_choice_eco_sawedoff:
+                    primary = "weapon_mag7";
+                case rifle_choice_eco_mac10:
+                    primary = "weapon_mp9";
+                case rifle_choice_eco_mp7:
+                    primary = "weapon_mp7";
+                case rifle_choice_eco_ump45:
+                    primary = "weapon_ump45";
+                case rifle_choice_eco_bizon:
+                    primary = "weapon_bizon";
             }
         }
 
@@ -833,6 +937,18 @@ public void GiveWeaponMenuT(int client) {
     DisplayMenu(menu, client, MENU_TIME_LENGTH);
 }
 
+public void GiveEcoMenu(int client) {
+    Handle menu = CreateMenu(MenuHandler_ECO);
+    SetMenuTitle(menu, "Select an eco weapon:");
+    AddMenuInt(menu, rifle_choice_eco_ssg08, "Scout");
+    AddMenuInt(menu, rifle_choice_eco_nova, "Nova");
+    AddMenuInt(menu, rifle_choice_eco_sawedoff, "Sawedoff/Mag7");
+    AddMenuInt(menu, rifle_choice_eco_mac10, "Mac10/Mp9");
+    AddMenuInt(menu, rifle_choice_eco_mp7, "Mp7");
+    AddMenuInt(menu, rifle_choice_eco_ump45, "UMP");
+    AddMenuInt(menu, rifle_choice_eco_bizon, "Bizon");
+    DisplayMenu(menu, client, MENU_TIME_LENGTH);
+}
 public int MenuHandler_RIFLE_CT(Handle menu, MenuAction action, int param1, int param2) {
     if (action == MenuAction_Select) {
         int client = param1;
@@ -865,6 +981,18 @@ public int MenuHandler_RIFLE_T(Handle menu, MenuAction action, int param1, int p
         CloseHandle(menu);
     }
 }
+//To be edited...
+public int MenuHandler_ECO(Handle menu, MenuAction action, int param1, int param2) {
+    if (action == MenuAction_Select) {
+        int client = param1;
+        int riflechoice = GetMenuInt(menu, param2);
+        g_EcoChoice[client] = riflechoice;
+        SetCookieInt(client, g_hRifleChoiceCookieEco, riflechoice);
+        CloseHandle(menu);
+    } else if (action == MenuAction_End) {
+        CloseHandle(menu);
+    }
+}
 
 public void GiveAwpMenu(int client) {
     Handle menu = CreateMenu(MenuHandler_AWP);
@@ -880,6 +1008,7 @@ public int MenuHandler_AWP(Handle menu, MenuAction action, int param1, int param
         bool allowAwps = GetMenuBool(menu, param2);
         g_AwpChoice[client] = allowAwps;
         SetCookieBool(client, g_hAwpChoiceCookie, allowAwps);
+        GiveEcoMenu(client);
     } else if (action == MenuAction_End) {
         CloseHandle(menu);
     }
