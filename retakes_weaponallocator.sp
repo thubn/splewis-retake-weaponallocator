@@ -188,7 +188,7 @@ int dollars_for_mimic_competitive_pistol_rounds;
 public Plugin myinfo = {
     name = "CS:GO Retakes: Customised Weapon Allocator for splewis retakes plugin",
     author = "thubn",
-    description = "Defines convars to customize weapon allocator of splewig retakes plugin",
+    description = "Defines convars to customize weapon allocator of splewis retakes plugin",
     version = PLUGIN_VERSION,
     url = ""
 };
@@ -198,17 +198,17 @@ public void OnPluginStart() {
     g_hGUNChoiceCookieT = RegClientCookie("retakes_pistolchoice_t", "", CookieAccess_Private);
     g_hRifleChoiceCookieCT  = RegClientCookie("retakes_riflechoice_ct", "", CookieAccess_Private);
     g_hRifleChoiceCookieT  = RegClientCookie("retakes_riflechoice_t", "", CookieAccess_Private);
-    g_hAwpChoiceCookie = RegClientCookie("retakes_awpchoice", "", CookieAccess_Private); 
+    g_hAwpChoiceCookie = RegClientCookie("retakes_awpchoice", "", CookieAccess_Private);
     g_hRifleChoiceCookieEcoCT = RegClientCookie("retakes_ecochoice_ct", "", CookieAccess_Private);
-	g_hRifleChoiceCookieEcoT = RegClientCookie("retakes_ecochoice_t", "", CookieAccess_Private);
-	g_hGUNChoiceCookieEco2CT = RegClientCookie("retakes_eco2choice_ct", "", CookieAccess_Private);
-	g_hGUNChoiceCookieEco2T = RegClientCookie("retakes_eco2choice_t", "", CookieAccess_Private);
-	
+    g_hRifleChoiceCookieEcoT = RegClientCookie("retakes_ecochoice_t", "", CookieAccess_Private);
+    g_hGUNChoiceCookieEco2CT = RegClientCookie("retakes_eco2choice_ct", "", CookieAccess_Private);
+    g_hGUNChoiceCookieEco2T = RegClientCookie("retakes_eco2choice_t", "", CookieAccess_Private);
+
 
     g_h_sm_retakes_weapon_pistolrounds = CreateConVar("sm_retakes_weapon_pistolrounds", "5", "The number of gun rounds (0 = no gun round)");
     g_h_sm_retakes_weapon_mimic_competitive_pistol_rounds = CreateConVar("sm_retakes_weapon_mimic_competitive_pistol_rounds", "1", "Whether pistol rounds are like 800$ rounds");
     g_h_sm_retakes_weapon_primary_enabled = CreateConVar("sm_retakes_weapon_primary_enabled", "1", "Whether the players can have primary weapon");
-    
+
     g_h_sm_retakes_weapon_nades_enabled = CreateConVar("sm_retakes_weapon_nades_enabled", "1", "Whether the players can have nades");
     g_h_sm_retakes_weapon_allow_nades_on_pistol_rounds = CreateConVar("sm_retakes_weapon_allow_nades_on_pistol_rounds", "1", "Whether the players can have nades on pistol rounds");
     g_h_sm_retakes_weapon_nades_hegrenade_ct_max = CreateConVar("sm_retakes_weapon_nades_hegrenade_ct_max", "1", "Number of hegrenade CT team can have");
@@ -219,32 +219,32 @@ public void OnPluginStart() {
     g_h_sm_retakes_weapon_nades_smokegrenade_t_max = CreateConVar("sm_retakes_weapon_nades_smokegrenade_t_max", "1", "Number of smokegrenade T team can have");
     g_h_sm_retakes_weapon_nades_molotov_ct_max = CreateConVar("sm_retakes_weapon_nades_molotov_ct_max", "1", "Number of molotov CT team can have");
     g_h_sm_retakes_weapon_nades_molotov_t_max = CreateConVar("sm_retakes_weapon_nades_molotov_t_max", "1", "Number of molotov T team can have");
-    
+
     g_h_sm_retakes_weapon_helmet_enabled = CreateConVar("sm_retakes_weapon_helmet_enabled", "1", "Whether the players have helmet");
     g_h_sm_retakes_weapon_kevlar_enabled = CreateConVar("sm_retakes_weapon_kevlar_enabled", "1", "Whether the players have kevlar");
     g_h_sm_retakes_weapon_awp_team_max = CreateConVar("sm_retakes_weapon_awp_team_max", "1", "The max number of AWP per team (0 = no awp)");
-    
+
     g_h_sm_retakes_weapon_deagle_enabled = CreateConVar("sm_retakes_weapon_deagle_enabled", "1", "Whether the players can choose deagle");
     g_h_sm_retakes_weapon_r8_enabled = CreateConVar("sm_retakes_weapon_r8_enabled", "1", "Whether the players can choose revolver");
     g_h_sm_retakes_weapon_cz_enabled = CreateConVar("sm_retakes_weapon_cz_enabled", "1", "Whether the playres can choose CZ");
     g_h_sm_retakes_weapon_p250_enabled = CreateConVar("sm_retakes_weapon_p250_enabled", "1", "Whether the players can choose P250");
     g_h_sm_retakes_weapon_tec9_fiveseven_enabled = CreateConVar("sm_retakes_weapon_tec9_fiveseven_enabled", "1", "Whether the players can choose Tec9/Five seven");
-    
+
     g_h_sm_retakes_kevlar_probability_on_comp_pistol_rounds = CreateConVar("sm_retakes_kevlar_probability_on_competitive_pistol_rounds", "6", "The probability to get kevlar for each player on competitive pistol rounds. Between 0 to 10. 0 = never, 10 = always");
     g_h_sm_retakes_defusekit_probability_on_comp_pistol_rounds = CreateConVar("sm_retakes_defusekit_probability_on_competitive_pistol_rounds", "6", "The probability to get defusal kit for each player on competitive pistol rounds. Between 0 to 10. 0 = never, 10 = always");
-    
+
     g_h_sm_retakes_kev_kit_nad_priority_on_comp_pistol_rounds_kev = CreateConVar("sm_retakes_kev_kit_nad_priority_on_comp_pistol_rounds_kev", "1", "The relative priority to have kevlar against kit/nade. Between 1 to 3. Default 1 (first).");
     g_h_sm_retakes_kev_kit_nad_priority_on_comp_pistol_rounds_kit = CreateConVar("sm_retakes_kev_kit_nad_priority_on_comp_pistol_rounds_kit", "2", "The relative priority to have kit against kevlar/nade. Between 1 to 3. Default 2 (second).");
     g_h_sm_retakes_kev_kit_nad_priority_on_comp_pistol_rounds_nad = CreateConVar("sm_retakes_kev_kit_nad_priority_on_comp_pistol_rounds_nad", "3", "The relative priority to have nade against kevlar/kit. Between 1 to 3. Default 3 (third).");
-	
-	//von thubn
-	g_h_sm_retakes_enable_eco = CreateConVar("sm_retakes_enable_eco", "1", "Enable or disable eco/force rounds.");
-	g_h_sm_retakes_ct_chance_eco1 = CreateConVar("sm_retakes_ct_chance_eco1", "15", "Chance in percent, that CTs have to do an SMG Force.");
-	g_h_sm_retakes_t_chance_eco1 = CreateConVar("sm_retakes_t_chance_eco1", "12", "Chance in percent, that Ts have to do an SMG Force.");
-	g_h_sm_retakes_ct_chance_eco2 = CreateConVar("sm_retakes_ct_chance_eco2", "7", "Chance in percent, that CTs have to do an Pistol Force.");
-	g_h_sm_retakes_t_chance_eco2 = CreateConVar("sm_retakes_t_chance_eco2", "5", "Chance in percent, that Ts have to do an Pistol Force.");
-	g_h_sm_retakes_streak_to_t_eco1 = CreateConVar("sm_retakes_streak_to_t_eco1", "3", "Rounds the T team has to win in a row to get the SMG Force.");
-	g_h_sm_retakes_streak_to_t_eco2 = CreateConVar("sm_retakes_streak_to_t_eco2", "4", "Rounds the T team has to win in a row to get the Pistol Force.");
+
+    //von thubn
+    g_h_sm_retakes_enable_eco = CreateConVar("sm_retakes_enable_eco", "1", "Enable or disable eco/force rounds.");
+    g_h_sm_retakes_ct_chance_eco1 = CreateConVar("sm_retakes_ct_chance_eco1", "15", "Chance in percent, that CTs have to do an SMG Force.");
+    g_h_sm_retakes_t_chance_eco1 = CreateConVar("sm_retakes_t_chance_eco1", "12", "Chance in percent, that Ts have to do an SMG Force.");
+    g_h_sm_retakes_ct_chance_eco2 = CreateConVar("sm_retakes_ct_chance_eco2", "7", "Chance in percent, that CTs have to do an Pistol Force.");
+    g_h_sm_retakes_t_chance_eco2 = CreateConVar("sm_retakes_t_chance_eco2", "5", "Chance in percent, that Ts have to do an Pistol Force.");
+    g_h_sm_retakes_streak_to_t_eco1 = CreateConVar("sm_retakes_streak_to_t_eco1", "3", "Rounds the T team has to win in a row to get the SMG Force.");
+    g_h_sm_retakes_streak_to_t_eco2 = CreateConVar("sm_retakes_streak_to_t_eco2", "4", "Rounds the T team has to win in a row to get the Pistol Force.");
 }
 
 public void OnClientConnected(int client) {
@@ -253,9 +253,9 @@ public void OnClientConnected(int client) {
     g_RifleChoiceCT[client] = rifle_choice_ct_m4a4;
     g_RifleChoiceT[client] = rifle_choice_t_ak47;
     g_EcoChoiceCT[client] = rifle_choice_ct_eco_ump45;
-	g_EcoChoiceT[client] = rifle_choice_t_eco_ump45;
-	g_Eco2ChoiceT[client] = eco2_choice_ct_deagle;
-	g_Eco2ChoiceT[client] = eco2_choice_t_deagle;
+    g_EcoChoiceT[client] = rifle_choice_t_eco_ump45;
+    g_Eco2ChoiceT[client] = eco2_choice_ct_deagle;
+    g_Eco2ChoiceT[client] = eco2_choice_t_deagle;
     g_side[client] = 0;
     g_AwpChoice[client] = false;
 }
@@ -287,10 +287,11 @@ public void OnClientCookiesCached(int client) {
     g_PistolchoiceT[client]  = GetCookieInt(client, g_hGUNChoiceCookieT);
     g_RifleChoiceCT[client] = GetCookieInt(client, g_hRifleChoiceCookieCT);
     g_RifleChoiceT[client] = GetCookieInt(client, g_hRifleChoiceCookieT);
-    g_AwpChoice[client]  = GetCookieBool(client, g_hAwpChoiceCookie);
+    g_AwpChoice[client] = GetCookieBool(client, g_hAwpChoiceCookie);
+    g_EcoChoiceT[client] = GetCookieInt(client, g_hRifleChoiceCookieEcoT);
     g_EcoChoiceCT[client] = GetCookieInt(client, g_hRifleChoiceCookieEcoCT);
-	g_Eco2ChoiceCT[client] = GetCookieInt(client, g_hGUNChoiceCookieEco2CT);
-	g_Eco2ChoiceT[client] = GetCookieInt(client, g_hGUNChoiceCookieEco2T);
+    g_Eco2ChoiceCT[client] = GetCookieInt(client, g_hGUNChoiceCookieEco2CT);
+    g_Eco2ChoiceT[client] = GetCookieInt(client, g_hGUNChoiceCookieEco2T);
 }
 
 static void SetNades(char nades[NADE_STRING_LENGTH], bool terrorist, bool competitivePistolRound) {
@@ -341,7 +342,7 @@ static void SetNades(char nades[NADE_STRING_LENGTH], bool terrorist, bool compet
                 break;
 
             switch(rand) {
-                case 1: 
+                case 1:
                     if ((terrorist ? nades_hegrenade_t_max : nades_hegrenade_ct_max) < max_hegrenade_allow && he_number == 0)
                     {
                         nades[indice] = 'h';
@@ -353,7 +354,7 @@ static void SetNades(char nades[NADE_STRING_LENGTH], bool terrorist, bool compet
                         else
                             nades_hegrenade_ct_max++;
                     }
-                case 2: 
+                case 2:
                     if ((terrorist ? nades_smokegrenade_t_max : nades_smokegrenade_ct_max) < max_smokegrenade_allow && smoke_number == 0)
                     {
                         nades[indice] = 's';
@@ -365,7 +366,7 @@ static void SetNades(char nades[NADE_STRING_LENGTH], bool terrorist, bool compet
                         else
                             nades_smokegrenade_ct_max++;
                     }
-                case 3: 
+                case 3:
                     if ((terrorist ? nades_flashbang_t_max : nades_flashbang_ct_max) < max_flashbang_allow && flashbang_number < maxflashbang)
                     {
                         nades[indice] = 'f';
@@ -377,7 +378,7 @@ static void SetNades(char nades[NADE_STRING_LENGTH], bool terrorist, bool compet
                         else
                             nades_flashbang_ct_max++;
                     }
-                case 4: 
+                case 4:
                     if ((terrorist ? nades_molotov_t_max : nades_molotov_ct_max) < max_molotov_allow && molotov_number == 0)
                     {
                         nades[indice] = terrorist ? 'm' : 'i';
@@ -437,7 +438,7 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
     nades_flashbang_t_max = 0;
     nades_molotov_ct_max = 0;
     nades_molotov_t_max = 0;
-	
+
     if(t_win_streak > GetConVarInt(g_h_sm_retakes_streak_to_t_eco1) && GetConVarInt(g_h_sm_retakes_enable_eco) == 1){
         isTEco = true;
         PrintToServer("T Eco by win streak");
@@ -462,7 +463,7 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
         isCtEco2 = true;
         PrintToServer("CT Eco2 by random");
     }
-    
+
 
     bool giveTAwp = true;
     bool giveCTAwp = true;
@@ -503,7 +504,7 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
         int client = GetArrayCell(tPlayers, playerPick);
 
         g_side[client] = 1;
-        
+
         dollars_for_mimic_competitive_pistol_rounds = money_for_competitive_pistol_round;
 
         primary = "";
@@ -549,7 +550,7 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
                 }
             }
         }
-        
+
         if (isTEco && !isTEco2 && !isPistolRound)
         {
             int rifle_choice_t = g_EcoChoiceT[client];
@@ -640,10 +641,10 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
             helmet = false;
 
         kit = false;
-        
+
         Retakes_SetPlayerInfo(client, primary, secondary, nades, health, kevlar, helmet, kit);
     }
-    
+
     awp_given = 0;
     int[] treatedCT = new int[ctCount];
     for (int i = 0; i < ctCount; i++) {
@@ -698,28 +699,28 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
                         primary = "weapon_m4a1_silencer";
                     case rifle_choice_ct_aug:
                         primary = "weapon_aug";
-					case rifle_choice_ct_ssg08:
-						primary = "weapon_ssg08";
-					case rifle_choice_ct_nova:
-						primary = "weapon_nova";
-					case rifle_choice_ct_xm1014:
-						primary = "weapon_xm1014";
-					case rifle_choice_ct_mag7:
-						primary = "weapon_mag7";
-					case rifle_choice_ct_m249:
-						primary = "weapon_m249";
-					case rifle_choice_ct_negev:
-						primary = "weapon_negev";
-					case rifle_choice_ct_mp9:
-						primary = "weapon_mp9";
-					case rifle_choice_ct_mp7:
-						primary = "weapon_mp7";
-					case rifle_choice_ct_ump45:
-						primary = "weapon_ump45";
-					case rifle_choice_ct_p90:
-						primary = "weapon_p90";
-					case rifle_choice_ct_bizon:
-						primary = "weapon_bizon";
+          					case rifle_choice_ct_ssg08:
+          						primary = "weapon_ssg08";
+          					case rifle_choice_ct_nova:
+          						primary = "weapon_nova";
+          					case rifle_choice_ct_xm1014:
+          						primary = "weapon_xm1014";
+          					case rifle_choice_ct_mag7:
+          						primary = "weapon_mag7";
+          					case rifle_choice_ct_m249:
+          						primary = "weapon_m249";
+          					case rifle_choice_ct_negev:
+          						primary = "weapon_negev";
+          					case rifle_choice_ct_mp9:
+          						primary = "weapon_mp9";
+          					case rifle_choice_ct_mp7:
+          						primary = "weapon_mp7";
+          					case rifle_choice_ct_ump45:
+          						primary = "weapon_ump45";
+          					case rifle_choice_ct_p90:
+          						primary = "weapon_p90";
+          					case rifle_choice_ct_bizon:
+          						primary = "weapon_bizon";
                 }
             }
         }
