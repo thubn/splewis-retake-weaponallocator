@@ -12,7 +12,7 @@
 const int money_for_competitive_pistol_round = 800;
 
 
-//rifle
+//ct rifle
 const int rifle_choice_ct_famas = 1;
 const int rifle_choice_ct_m4a4 = 2;
 const int rifle_choice_ct_m4a1_s = 3;
@@ -28,7 +28,9 @@ const int rifle_choice_ct_mp7 = 12;
 const int rifle_choice_ct_ump45 = 13;
 const int rifle_choice_ct_p90 = 14;
 const int rifle_choice_ct_bizon = 15;
+const int rifle_choice_ct_mp5sd = 16;
 
+//t rifle
 const int rifle_choice_t_galil = 1;
 const int rifle_choice_t_ak47 = 2;
 const int rifle_choice_t_sg553 = 3;
@@ -43,9 +45,10 @@ const int rifle_choice_t_mp7 = 12;
 const int rifle_choice_t_ump45 = 13;
 const int rifle_choice_t_p90 = 14;
 const int rifle_choice_t_bizon = 15;
+const int rifle_choice_t_mp5sd = 16;
 
 
-//pistol
+//ct pistol
 const int pistol_choice_ct_hkp2000 = 1;
 const int pistol_choice_ct_usp = 7;
 const int pistol_choice_ct_p250 = 2;
@@ -54,6 +57,7 @@ const int pistol_choice_ct_cz = 4;
 const int pistol_choice_ct_deagle = 5;
 const int pistol_choice_ct_r8 = 6;
 
+//t pistol
 const int pistol_choice_t_glock = 1;
 const int pistol_choice_t_p250 = 2;
 const int pistol_choice_t_tec9 = 3;
@@ -62,7 +66,7 @@ const int pistol_choice_t_deagle = 5;
 const int pistol_choice_t_r8 = 6;
 
 
-//eco2
+//ct pistol eco "eco2"
 const int eco2_choice_ct_hkp2000 = 1;
 const int eco2_choice_ct_usp = 7;
 const int eco2_choice_ct_p250 = 2;
@@ -71,6 +75,7 @@ const int eco2_choice_ct_cz = 4;
 const int eco2_choice_ct_deagle = 5;
 const int eco2_choice_ct_r8 = 6;
 
+//t pistol eco "eco2"
 const int eco2_choice_t_glock = 1;
 const int eco2_choice_t_p250 = 2;
 const int eco2_choice_t_tec9 = 3;
@@ -79,7 +84,7 @@ const int eco2_choice_t_deagle = 5;
 const int eco2_choice_t_r8 = 6;
 
 
-//eco1
+//ct eco "eco1"
 const int rifle_choice_ct_eco_ssg08 = 1;
 const int rifle_choice_ct_eco_nova = 2;
 const int rifle_choice_ct_eco_mag7 = 3;
@@ -87,7 +92,9 @@ const int rifle_choice_ct_eco_mp9 = 4;
 const int rifle_choice_ct_eco_mp7 = 5;
 const int rifle_choice_ct_eco_ump45 = 6;
 const int rifle_choice_ct_eco_bizon = 7;
+const int rifle_choice_ct_eco_mp5sd = 8;
 
+//t eco "eco1"
 const int rifle_choice_t_eco_ssg08 = 1;
 const int rifle_choice_t_eco_nova = 2;
 const int rifle_choice_t_eco_sawedoff = 3;
@@ -95,6 +102,7 @@ const int rifle_choice_t_eco_mac10 = 4;
 const int rifle_choice_t_eco_mp7 = 5;
 const int rifle_choice_t_eco_ump45 = 6;
 const int rifle_choice_t_eco_bizon = 7;
+const int rifle_choice_t_eco_mp5sd = 8;
 
 
 //prices
@@ -114,6 +122,7 @@ const int gun_price_for_r8 = 800;
 const int kit_price = 400;
 const int kevlar_price = 650;
 
+//weapon preference arrays for the players
 int g_PistolchoiceCT[MAXPLAYERS+1];
 int g_PistolchoiceT[MAXPLAYERS+1];
 int g_RifleChoiceCT[MAXPLAYERS+1];
@@ -124,6 +133,9 @@ int g_EcoChoiceT[MAXPLAYERS+1];
 int g_Eco2ChoiceCT[MAXPLAYERS+1];
 int g_Eco2ChoiceT[MAXPLAYERS+1];
 int g_side[MAXPLAYERS+1];
+//bool g_TaserChoice[MAXPLAYERS+1];
+
+
 Handle g_hGUNChoiceCookieCT = INVALID_HANDLE;
 Handle g_hGUNChoiceCookieT = INVALID_HANDLE;
 Handle g_hRifleChoiceCookieCT = INVALID_HANDLE;
@@ -133,6 +145,7 @@ Handle g_hRifleChoiceCookieEcoCT = INVALID_HANDLE;
 Handle g_hRifleChoiceCookieEcoT = INVALID_HANDLE;
 Handle g_hGUNChoiceCookieEco2CT = INVALID_HANDLE;
 Handle g_hGUNChoiceCookieEco2T = INVALID_HANDLE;
+//Handle g_hTaserChoiceCookie = INVALID_HANDLE;
 
 
 Handle g_h_sm_retakes_weapon_mimic_competitive_pistol_rounds = INVALID_HANDLE;
@@ -189,20 +202,22 @@ public Plugin myinfo = {
     name = "CS:GO Retakes: Customised Weapon Allocator for splewis retakes plugin",
     author = "thubn",
     description = "Defines convars to customize weapon allocator of splewis retakes plugin",
-    version = PLUGIN_VERSION,
+    version = "1.0",
     url = ""
 };
-
+/**
+ * convars
+ */
 public void OnPluginStart() {
-    g_hGUNChoiceCookieCT = RegClientCookie("retakes_pistolchoice_ct", "", CookieAccess_Private);
-    g_hGUNChoiceCookieT = RegClientCookie("retakes_pistolchoice_t", "", CookieAccess_Private);
-    g_hRifleChoiceCookieCT  = RegClientCookie("retakes_riflechoice_ct", "", CookieAccess_Private);
-    g_hRifleChoiceCookieT  = RegClientCookie("retakes_riflechoice_t", "", CookieAccess_Private);
-    g_hAwpChoiceCookie = RegClientCookie("retakes_awpchoice", "", CookieAccess_Private);
-    g_hRifleChoiceCookieEcoCT = RegClientCookie("retakes_ecochoice_ct", "", CookieAccess_Private);
-    g_hRifleChoiceCookieEcoT = RegClientCookie("retakes_ecochoice_t", "", CookieAccess_Private);
-    g_hGUNChoiceCookieEco2CT = RegClientCookie("retakes_eco2choice_ct", "", CookieAccess_Private);
-    g_hGUNChoiceCookieEco2T = RegClientCookie("retakes_eco2choice_t", "", CookieAccess_Private);
+    g_hGUNChoiceCookieCT = RegClientCookie("retakes_pistolchoice_ct", "Buy round Pistol choice for ct", CookieAccess_Private);
+    g_hGUNChoiceCookieT = RegClientCookie("retakes_pistolchoice_t", "Buy round Pistol choice for t", CookieAccess_Private);
+    g_hRifleChoiceCookieCT  = RegClientCookie("retakes_riflechoice_ct", "Buy round Rifle choice for ct", CookieAccess_Private);
+    g_hRifleChoiceCookieT  = RegClientCookie("retakes_riflechoice_t", "Buy round Rifle choice for t", CookieAccess_Private);
+    g_hAwpChoiceCookie = RegClientCookie("retakes_awpchoice", "AWP choice for ct and t", CookieAccess_Private);
+    g_hRifleChoiceCookieEcoCT = RegClientCookie("retakes_ecochoice_ct", "Eco/Force round Weapon choice for ct", CookieAccess_Private);
+    g_hRifleChoiceCookieEcoT = RegClientCookie("retakes_ecochoice_t", "Eco/Force round Weapon choice for t", CookieAccess_Private);
+    g_hGUNChoiceCookieEco2CT = RegClientCookie("retakes_eco2choice_ct", "Eco/Force round Weapon choice for ct", CookieAccess_Private);
+    g_hGUNChoiceCookieEco2T = RegClientCookie("retakes_eco2choice_t", "Eco/Force round Weapon choice for t", CookieAccess_Private);
 
 
     g_h_sm_retakes_weapon_pistolrounds = CreateConVar("sm_retakes_weapon_pistolrounds", "5", "The number of gun rounds (0 = no gun round)");
@@ -254,10 +269,11 @@ public void OnClientConnected(int client) {
     g_RifleChoiceT[client] = rifle_choice_t_ak47;
     g_EcoChoiceCT[client] = rifle_choice_ct_eco_ump45;
     g_EcoChoiceT[client] = rifle_choice_t_eco_ump45;
-    g_Eco2ChoiceT[client] = eco2_choice_ct_deagle;
+    g_Eco2ChoiceCT[client] = eco2_choice_ct_deagle;
     g_Eco2ChoiceT[client] = eco2_choice_t_deagle;
     g_side[client] = 0;
     g_AwpChoice[client] = false;
+    //g_TaserChoice[client] = false;
 }
 
 public Action OnClientSayCommand(int client, const char[] command, const char[] args) {
@@ -274,6 +290,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 
 public void Retakes_OnWeaponsAllocated(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bombsite) {
     WeaponAllocator(tPlayers, ctPlayers, bombsite);
+    //for()
 }
 
 /**
@@ -292,6 +309,7 @@ public void OnClientCookiesCached(int client) {
     g_EcoChoiceCT[client] = GetCookieInt(client, g_hRifleChoiceCookieEcoCT);
     g_Eco2ChoiceCT[client] = GetCookieInt(client, g_hGUNChoiceCookieEco2CT);
     g_Eco2ChoiceT[client] = GetCookieInt(client, g_hGUNChoiceCookieEco2T);
+    //g_TaserChoice[client] = GetCookieInt(client, g_hTaserChoiceCookie);
 }
 
 static void SetNades(char nades[NADE_STRING_LENGTH], bool terrorist, bool competitivePistolRound) {
@@ -522,9 +540,9 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
                 switch(rifle_choice_t)
                 {
                     case rifle_choice_t_galil:
-                        primary = "weapon_galilar";
+                      primary = "weapon_galilar";
                     case rifle_choice_t_sg553:
-                        primary = "weapon_sg556";
+                      primary = "weapon_sg556";
                     case rifle_choice_t_ssg08:
                     	primary = "weapon_ssg08";
                     case rifle_choice_t_nova:
@@ -547,6 +565,8 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
                     	primary = "weapon_p90";
                     case rifle_choice_t_bizon:
 						primary = "weapon_bizon";
+                    case rifle_choice_t_mp5sd:
+                      	primary = "weapon_mp5sd";
                 }
             }
         }
@@ -571,6 +591,8 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
                     primary = "weapon_ump45";
                 case rifle_choice_t_eco_bizon:
                     primary = "weapon_bizon";
+                case rifle_choice_t_eco_mp5sd:
+                    primary = "weapon_mp5sd";
             }
         }
 		if(isPistolRound){
@@ -721,6 +743,8 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
           						primary = "weapon_p90";
           					case rifle_choice_ct_bizon:
           						primary = "weapon_bizon";
+                    		case rifle_choice_ct_mp5sd:
+                      			primary = "weapon_mp5sd";
                 }
             }
         }
@@ -744,6 +768,8 @@ public void WeaponAllocator(ArrayList tPlayers, ArrayList ctPlayers, Bombsite bo
                     primary = "weapon_ump45";
                 case rifle_choice_ct_eco_bizon:
                     primary = "weapon_bizon";
+                case rifle_choice_ct_eco_mp5sd:
+                    primary = "weapon_mp5sd";
             }
         }
 		if(isPistolRound){
@@ -1003,6 +1029,7 @@ public void GiveWeaponMenuCT(int client) {
     AddMenuInt(menu, rifle_choice_ct_ump45, "UMP");
     AddMenuInt(menu, rifle_choice_ct_p90, "AutismBlaster");
     AddMenuInt(menu, rifle_choice_ct_bizon, "Bizon");
+    AddMenuInt(menu, rifle_choice_ct_mp5sd, "Mp5");
     DisplayMenu(menu, client, MENU_TIME_LENGTH);
 }
 
@@ -1023,6 +1050,7 @@ public void GiveWeaponMenuT(int client) {
     AddMenuInt(menu, rifle_choice_t_ump45, "UMP");
     AddMenuInt(menu, rifle_choice_t_p90, "AutismBlaster");
     AddMenuInt(menu, rifle_choice_t_bizon, "Bizon");
+    AddMenuInt(menu, rifle_choice_t_mp5sd, "Mp5");
     DisplayMenu(menu, client, MENU_TIME_LENGTH);
 }
 
@@ -1036,6 +1064,7 @@ public void GiveEcoMenuCT(int client) {
     AddMenuInt(menu, rifle_choice_ct_eco_mp7, "Mp7");
     AddMenuInt(menu, rifle_choice_ct_eco_ump45, "UMP");
     AddMenuInt(menu, rifle_choice_ct_eco_bizon, "Bizon");
+    AddMenuInt(menu, rifle_choice_ct_eco_mp5sd, "Mp5");
     DisplayMenu(menu, client, MENU_TIME_LENGTH);
 }
 
@@ -1049,6 +1078,7 @@ public void GiveEcoMenuT(int client) {
     AddMenuInt(menu, rifle_choice_t_eco_mp7, "Mp7");
     AddMenuInt(menu, rifle_choice_t_eco_ump45, "UMP");
     AddMenuInt(menu, rifle_choice_t_eco_bizon, "Bizon");
+    AddMenuInt(menu, rifle_choice_t_eco_mp5sd, "Mp5");
     DisplayMenu(menu, client, MENU_TIME_LENGTH);
 }
 
