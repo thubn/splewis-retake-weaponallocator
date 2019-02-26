@@ -45,6 +45,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
         	//set taser pref for client
         	g_TaserChoice[client] = !g_TaserChoice[client];
         	SetCookieBool(client, g_hTaserChoiceCookie, g_TaserChoice[client]);
+        	PrintToChat(client, "Taser %i", g_TaserChoice[client]);
             break;
         }
     }
@@ -64,7 +65,7 @@ public void Retakes_OnWeaponsAllocated(ArrayList tPlayers, ArrayList ctPlayers, 
 			players[i] = GetArrayCell(tPlayers, i);
 	}
 	for (int i = 0; i < GetArraySize(ctPlayers); i++){
-			players[i + GetArraySize(tPlayers)] = GetArrayCell(tPlayers, i);
+			players[i + GetArraySize(tPlayers)] = GetArrayCell(ctPlayers, i);
 	}
 	CreateTimer(0.5, Alloc);
 }
