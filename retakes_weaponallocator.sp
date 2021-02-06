@@ -203,7 +203,7 @@ public Plugin myinfo = {
     author = "thubn",
     description = "Defines convars to customize weapon allocator of splewis retakes plugin",
     version = "1.0",
-    url = ""
+    url = "https://github.com/thubn/splewis-retake-weaponallocator"
 };
 /**
  * convars
@@ -252,7 +252,7 @@ public void OnPluginStart() {
     g_h_sm_retakes_kev_kit_nad_priority_on_comp_pistol_rounds_kit = CreateConVar("sm_retakes_kev_kit_nad_priority_on_comp_pistol_rounds_kit", "2", "The relative priority to have kit against kevlar/nade. Between 1 to 3. Default 2 (second).");
     g_h_sm_retakes_kev_kit_nad_priority_on_comp_pistol_rounds_nad = CreateConVar("sm_retakes_kev_kit_nad_priority_on_comp_pistol_rounds_nad", "3", "The relative priority to have nade against kevlar/kit. Between 1 to 3. Default 3 (third).");
 
-    //von thubn
+    //by thubn
     g_h_sm_retakes_enable_eco = CreateConVar("sm_retakes_enable_eco", "1", "Enable or disable eco/force rounds.");
     g_h_sm_retakes_ct_chance_eco1 = CreateConVar("sm_retakes_ct_chance_eco1", "15", "Chance in percent, that CTs have to do an SMG Force.");
     g_h_sm_retakes_t_chance_eco1 = CreateConVar("sm_retakes_t_chance_eco1", "12", "Chance in percent, that Ts have to do an SMG Force.");
@@ -273,14 +273,35 @@ public void OnClientConnected(int client) {
     g_Eco2ChoiceT[client] = eco2_choice_t_deagle;
     g_side[client] = 0;
     g_AwpChoice[client] = false;
-    //g_TaserChoice[client] = false;
 }
 
 public Action OnClientSayCommand(int client, const char[] command, const char[] args) {
     char gunsChatCommands[][] = { "/gun", "/guns", "gun", "guns", ".gun", ".guns", ".setup", "!gun", "!guns", "gnus", "gans", "!gans" };
+    char awpChatCommands[][] = { "!awp", ".awp", "awp", "!orb", ".orb", "orb" };
+    char pistolChatCommands[][] = { "!pistol", ".pistol", "pistol" };
+    char ecoChatCommands[][] = { "!eco", ".eco", "eco", "!force", ".force", "force" };
     for (int i = 0; i < sizeof(gunsChatCommands); i++) {
         if (strcmp(args[0], gunsChatCommands[i], false) == 0) {
 			GiveWeaponMenuCT(client);
+            break;
+        }
+    }
+    for (int i = 0; i < sizeof(awpChatCommands); i++) {
+        if (strcmp(args[0], awpChatCommands[i], false) == 0) {
+            g_AwpChoice[client] = !g_AwpChoice[client];
+            PrintToChat(client, "AWP %i", g_AwpChoice[client]);
+            break;
+        }
+    }
+    for (int i = 0; i < sizeof(pistolChatCommands); i++) {
+        if (strcmp(args[0], pistolChatCommands[i], false) == 0) {
+			GivePistolMenuCT(client);
+            break;
+        }
+    }
+    for (int i = 0; i < sizeof(ecoChatCommands); i++) {
+        if (strcmp(args[0], ecoChatCommands[i], false) == 0) {
+			GiveEcoMenuCT(client);
             break;
         }
     }
@@ -1056,7 +1077,7 @@ public void GiveWeaponMenuT(int client) {
 
 public void GiveEcoMenuCT(int client) {
     Handle menu = CreateMenu(MenuHandler_ECO_CT);
-    SetMenuTitle(menu, "Select an CT eco weapon:");
+    SetMenuTitle(menu, "Select an CT force weapon:");
     AddMenuInt(menu, rifle_choice_ct_eco_ssg08, "Scout");
     AddMenuInt(menu, rifle_choice_ct_eco_nova, "Nova");
     AddMenuInt(menu, rifle_choice_ct_eco_mag7, "Mag7");
@@ -1070,7 +1091,7 @@ public void GiveEcoMenuCT(int client) {
 
 public void GiveEcoMenuT(int client) {
     Handle menu = CreateMenu(MenuHandler_ECO_T);
-    SetMenuTitle(menu, "Select an T eco weapon:");
+    SetMenuTitle(menu, "Select an T force weapon:");
     AddMenuInt(menu, rifle_choice_t_eco_ssg08, "Scout");
     AddMenuInt(menu, rifle_choice_t_eco_nova, "Nova");
     AddMenuInt(menu, rifle_choice_t_eco_sawedoff, "Sawedoff");
@@ -1084,7 +1105,7 @@ public void GiveEcoMenuT(int client) {
 
 public void GiveEco2MenuCT(int client) {
     Handle menu = CreateMenu(MenuHandler_ECO2_CT);
-    SetMenuTitle(menu, "Select an CT eco2 weapon:");
+    SetMenuTitle(menu, "Select an CT force Pistol:");
     AddMenuInt(menu, eco2_choice_ct_hkp2000, "p2000");
     AddMenuInt(menu, eco2_choice_ct_usp, "usp");
     AddMenuInt(menu, eco2_choice_ct_p250, "p250");
@@ -1097,7 +1118,7 @@ public void GiveEco2MenuCT(int client) {
 
 public void GiveEco2MenuT(int client) {
     Handle menu = CreateMenu(MenuHandler_ECO2_T);
-    SetMenuTitle(menu, "Select an T eco2 weapon:");
+    SetMenuTitle(menu, "Select an T force Pistol:");
     AddMenuInt(menu, eco2_choice_t_glock, "glawk");
     AddMenuInt(menu, eco2_choice_t_p250, "p250");
     AddMenuInt(menu, eco2_choice_t_tec9, "kek-9");

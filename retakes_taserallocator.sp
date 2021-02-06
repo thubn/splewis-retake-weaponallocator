@@ -16,10 +16,10 @@
 public Plugin myinfo = 
 {
 	name = "Taser allocator",
-	author = PLUGIN_AUTHOR,
+	author = "thubn",
 	description = "",
-	version = PLUGIN_VERSION,
-	url = ""
+	version = "1.0",
+	url = "https://github.com/thubn/splewis-retake-weaponallocator"
 };
 
 bool g_TaserChoice[MAXPLAYERS + 1];
